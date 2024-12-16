@@ -1,6 +1,7 @@
 package com.taskease.college.Model;
 
 
+import com.taskease.college.Model.Faculty.SpreedSheet;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -28,5 +29,10 @@ public class Department {
     @OneToMany(mappedBy = "department" , cascade = CascadeType.ALL , fetch = FetchType.EAGER)
     private Set<Student> students = new HashSet<>();
 
+    @OneToMany(mappedBy = "departments" , cascade =  CascadeType.ALL , fetch = FetchType.EAGER)
+    private Set<User> users = new HashSet<>();
+
+    @OneToMany(mappedBy = "department" , cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<SpreedSheet> spreedSheets = new HashSet<>();
 
 }

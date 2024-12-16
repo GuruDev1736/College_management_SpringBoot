@@ -81,11 +81,18 @@ public class AuthController {
             return new ResponseEntity<>(new ApiResponse<>("200", "User Logged Successfully", response), HttpStatus.OK);
     }
 
-    @PostMapping("/user/register")
-    public ResponseEntity<ApiResponse<UserDTO>> createUser(@Valid @RequestBody UserDTO userDTO , @PathVariable long societyId) {
-        UserDTO createdUser = this.userService.createUser(userDTO,societyId);
-        return new ResponseEntity<>(new ApiResponse<>("200","User Created Successfully",createdUser), HttpStatus.OK);
+    @PostMapping("/faculty/register/{departmentId}")
+    public ResponseEntity<ApiResponse<UserDTO>> createUser(@Valid @RequestBody UserDTO userDTO , @PathVariable int departmentId) {
+        UserDTO createdUser = this.userService.createFaculty(userDTO,departmentId);
+        return new ResponseEntity<>(new ApiResponse<>("200","Faculty Created Successfully",createdUser), HttpStatus.OK);
     }
+
+    @PostMapping("/super/register")
+    public ResponseEntity<ApiResponse<UserDTO>> createSuperAdmin(@Valid @RequestBody UserDTO userDTO) {
+        UserDTO createdUser = this.userService.createSuperAdmin(userDTO);
+        return new ResponseEntity<>(new ApiResponse<>("200","Super Admin Created Successfully",createdUser), HttpStatus.OK);
+    }
+
 
     private void doAuthenticate(String email, String password) {
 

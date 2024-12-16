@@ -51,7 +51,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/login").permitAll()
                         .requestMatchers("/auth/register").permitAll()
-                        .requestMatchers("/auth/master/register").permitAll()
+                        .requestMatchers("/auth/super/register").permitAll()
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(point))

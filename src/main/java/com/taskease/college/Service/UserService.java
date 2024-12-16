@@ -5,5 +5,6 @@ import com.taskease.college.PayLoad.UserDTO;
 
 public interface UserService {
 
-    UserDTO createFaculty(UserDTO userDTO , long societyId);
+    UserDTO createFaculty(UserDTO userDTO , int departmentId);
+    UserDTO createSuperAdmin(UserDTO userDTO);
 }

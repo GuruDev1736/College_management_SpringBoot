@@ -39,6 +39,10 @@ public class User {
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role", referencedColumnName = "id"))
     private Set<Role> roles = new HashSet<>();
 
+    @ManyToOne
+    @JoinColumn(name = "departmentId" , referencedColumnName = "id")
+    private Department departments;
+
 
 
 }
