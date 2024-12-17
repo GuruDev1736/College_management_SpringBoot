@@ -18,9 +18,9 @@ public class SpreedSheetController {
         this.spreedSheetService = spreedSheetService;
     }
 
-    @PostMapping("/create/{departmentId}")
-    public ResponseEntity<ApiResponse<SpreedSheetDTO>> createSpreedSheet(@RequestBody SpreedSheetDTO spreedSheetDTO , @PathVariable("departmentId") int departmentId){
-        SpreedSheetDTO createdSpreedSheet = this.spreedSheetService.createSpreedSheet(spreedSheetDTO,departmentId);
+    @PostMapping("/create/{departmentId}/{userId}")
+    public ResponseEntity<ApiResponse<SpreedSheetDTO>> createSpreedSheet(@RequestBody SpreedSheetDTO spreedSheetDTO , @PathVariable("departmentId") int departmentId , @PathVariable("userId") long userId){
+        SpreedSheetDTO createdSpreedSheet = this.spreedSheetService.createSpreedSheet(spreedSheetDTO,departmentId,userId);
         return ResponseEntity.ok(new ApiResponse<>("200","SpreedSheet Created Successfully",createdSpreedSheet));
     }
     

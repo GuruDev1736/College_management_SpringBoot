@@ -1,5 +1,6 @@
 package com.taskease.college.Model;
 
+import com.taskease.college.Model.Faculty.SpreedSheet;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -43,6 +44,7 @@ public class User {
     @JoinColumn(name = "departmentId" , referencedColumnName = "id")
     private Department departments;
 
-
+    @OneToMany(mappedBy = "user" , cascade = CascadeType.ALL , fetch = FetchType.EAGER)
+    private Set<SpreedSheet> spreedSheets = new HashSet<>();
 
 }

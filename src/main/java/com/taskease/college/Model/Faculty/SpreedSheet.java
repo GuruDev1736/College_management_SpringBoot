@@ -1,6 +1,7 @@
 package com.taskease.college.Model.Faculty;
 
 import com.taskease.college.Model.Department;
+import com.taskease.college.Model.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,11 +28,15 @@ public class SpreedSheet {
     @Column(unique = true, nullable = false)
     private String link ;
     private String imageLink;
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String category;
 
     @ManyToOne
     @JoinColumn(name = "departmentId" , referencedColumnName = "id")
     private Department department;
+
+    @ManyToOne
+    @JoinColumn(name = "userId" , referencedColumnName = "id")
+    private User user;
 
 }

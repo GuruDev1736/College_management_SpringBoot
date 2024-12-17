@@ -3,9 +3,11 @@ package com.taskease.college.Service.ServiceImpl;
 import com.taskease.college.Exceptions.ResourceNotFoundException;
 import com.taskease.college.Model.Department;
 import com.taskease.college.Model.Faculty.SpreedSheet;
+import com.taskease.college.Model.User;
 import com.taskease.college.PayLoad.SpreedSheetDTO;
 import com.taskease.college.Repository.DepartmentRepo;
 import com.taskease.college.Repository.SpreedSheetRepo;
+import com.taskease.college.Repository.UserRepo;
 import com.taskease.college.Service.SpreedSheetService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -18,19 +20,22 @@ public class SpreedSheetServiceImpl implements SpreedSheetService {
     private final SpreedSheetRepo spreedSheetRepo;
     private final ModelMapper modelMapper;
     private final DepartmentRepo departmentRepo ;
+    private final UserRepo userRepo;
 
-    public SpreedSheetServiceImpl(SpreedSheetRepo spreedSheetRepo, ModelMapper modelMapper, DepartmentRepo departmentRepo) {
+    public SpreedSheetServiceImpl(SpreedSheetRepo spreedSheetRepo, ModelMapper modelMapper, DepartmentRepo departmentRepo, UserRepo userRepo) {
         this.spreedSheetRepo = spreedSheetRepo;
         this.modelMapper = modelMapper;
         this.departmentRepo = departmentRepo;
+        this.userRepo = userRepo;
     }
 
     @Override
-    public SpreedSheetDTO createSpreedSheet(SpreedSheetDTO spreedSheetDTO , int departmentId) {
-
+    public SpreedSheetDTO createSpreedSheet(SpreedSheetDTO spreedSheetDTO , int departmentId , long userId) {
+        User user = this.userRepo.findById(userId).orElseThrow(()-> new ResourceNotFoundException("User","Id",userId));
         Department department = this.departmentRepo.findById(departmentId).orElseThrow(()-> new ResourceNotFoundException("Department","Id",departmentId));
         SpreedSheet spreedSheet = this.modelMapper.map(spreedSheetDTO, SpreedSheet.class);
         spreedSheet.setDepartment(department);
+        spreedSheet.setUser(user);
         SpreedSheet save = this.spreedSheetRepo.save(spreedSheet);
         return this.modelMapper.map(save,SpreedSheetDTO.class);
 

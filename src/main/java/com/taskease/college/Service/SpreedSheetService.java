@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface SpreedSheetService {
 
-    SpreedSheetDTO createSpreedSheet(SpreedSheetDTO spreedSheetDTO , int departmentId);
+    SpreedSheetDTO createSpreedSheet(SpreedSheetDTO spreedSheetDTO , int departmentId , long userId);
     SpreedSheetDTO updateSpreedSheet(SpreedSheetDTO spreedSheetDTO , long id);
     SpreedSheetDTO getSpreedSheet(long id);
     Void deleteSpreedSheet(long id);
