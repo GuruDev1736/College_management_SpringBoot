@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface AttendanceService {
 
-    AttendanceDTO createAttendanceSheet(AttendanceDTO attendanceDTO , int departmentId);
+    AttendanceDTO createAttendanceSheet(AttendanceDTO attendanceDTO , int departmentId , long userId);
     AttendanceDTO updateAttendanceSheet(AttendanceDTO attendanceDTO , long id);
     AttendanceDTO getAttendanceSheet(long id);
     Void deleteAttendanceSheet(long id);
