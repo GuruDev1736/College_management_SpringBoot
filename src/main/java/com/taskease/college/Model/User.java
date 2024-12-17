@@ -47,4 +47,7 @@ public class User {
     @OneToMany(mappedBy = "user" , cascade = CascadeType.ALL , fetch = FetchType.EAGER)
     private Set<SpreedSheet> spreedSheets = new HashSet<>();
 
+    @OneToMany(mappedBy = "user" , cascade = CascadeType.ALL , fetch = FetchType.EAGER)
+    private Set<Attendance> attendances = new HashSet<>();
+
 }

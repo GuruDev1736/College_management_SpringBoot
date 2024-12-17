@@ -8,9 +8,9 @@ import java.util.List;
 
 public interface AttendanceService {
 
-    AttendanceDTO createSpreedSheet(AttendanceDTO attendanceDTO , int departmentId);
-    AttendanceDTO updateSpreedSheet(AttendanceDTO attendanceDTO , long id);
-    AttendanceDTO getSpreedSheet(long id);
-    Void deleteSpreedSheet(long id);
+    AttendanceDTO createAttendanceSheet(AttendanceDTO attendanceDTO , int departmentId);
+    AttendanceDTO updateAttendanceSheet(AttendanceDTO attendanceDTO , long id);
+    AttendanceDTO getAttendanceSheet(long id);
+    Void deleteAttendanceSheet(long id);
     List<AttendanceDTO> getByCategory(String category , int departmentId);
 }
