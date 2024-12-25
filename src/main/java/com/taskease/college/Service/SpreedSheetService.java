@@ -10,5 +10,8 @@ public interface SpreedSheetService {
     SpreedSheetDTO updateSpreedSheet(SpreedSheetDTO spreedSheetDTO , long id);
     SpreedSheetDTO getSpreedSheet(long id);
     Void deleteSpreedSheet(long id);
-    List<SpreedSheetDTO> getByCategory(String category , int departmentId);
+    List<SpreedSheetDTO> getByCategoryAndDepartment(String category , int departmentId);
+    List<SpreedSheetDTO> getByCategoryAndByUser(String category , int departmentId , long userId);
+    List<SpreedSheetDTO> getByCategory(String category);
+    SpreedSheetDTO createOfficeBudget(SpreedSheetDTO spreedSheetDTO,long userId);
 }

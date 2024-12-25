@@ -1,6 +1,6 @@
 package com.taskease.college.PayLoad;
 
-import jakarta.persistence.Column;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,12 +12,14 @@ import java.util.Date;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AttendanceDTO {
+public class DeadLineDTO {
 
     private long id;
-    private Date createdDate;
+
     private String title;
     private String description;
-    private String link;
-    private String category;
+    private String startDate ;
+    private String endDate ;
+    private Date createdDate = new Date();
+    private UserDTO user;
 }

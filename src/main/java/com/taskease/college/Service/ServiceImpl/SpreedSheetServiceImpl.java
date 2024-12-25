@@ -9,6 +9,8 @@ import com.taskease.college.Repository.DepartmentRepo;
 import com.taskease.college.Repository.SpreedSheetRepo;
 import com.taskease.college.Repository.UserRepo;
 import com.taskease.college.Service.SpreedSheetService;
+import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -21,12 +23,14 @@ public class SpreedSheetServiceImpl implements SpreedSheetService {
     private final ModelMapper modelMapper;
     private final DepartmentRepo departmentRepo ;
     private final UserRepo userRepo;
+    private final EntityManager entityManager;
 
-    public SpreedSheetServiceImpl(SpreedSheetRepo spreedSheetRepo, ModelMapper modelMapper, DepartmentRepo departmentRepo, UserRepo userRepo) {
+    public SpreedSheetServiceImpl(SpreedSheetRepo spreedSheetRepo, ModelMapper modelMapper, DepartmentRepo departmentRepo, UserRepo userRepo, EntityManager entityManager) {
         this.spreedSheetRepo = spreedSheetRepo;
         this.modelMapper = modelMapper;
         this.departmentRepo = departmentRepo;
         this.userRepo = userRepo;
+        this.entityManager = entityManager;
     }
 
     @Override
@@ -59,6 +63,7 @@ public class SpreedSheetServiceImpl implements SpreedSheetService {
         return this.modelMapper.map(spreedSheet,SpreedSheetDTO.class);
     }
 
+    @Transactional
     @Override
     public Void deleteSpreedSheet(long id) {
         SpreedSheet spreedSheet = this.spreedSheetRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("SpreedSheet","Id",id));
@@ -71,9 +76,33 @@ public class SpreedSheetServiceImpl implements SpreedSheetService {
     }
 
     @Override
-    public List<SpreedSheetDTO> getByCategory(String category , int departmentId) {
+    public List<SpreedSheetDTO> getByCategoryAndDepartment(String category , int departmentId) {
         Department department = this.departmentRepo.findById(departmentId).orElseThrow(()-> new ResourceNotFoundException("Department","Id",departmentId));
         List<SpreedSheetDTO> spreedSheetDTOS = this.spreedSheetRepo.findByCategoryAndDepartment(category,departmentId).stream().map(spreedSheet -> this.modelMapper.map(spreedSheet,SpreedSheetDTO.class)).toList();
         return spreedSheetDTOS;
+    }
+
+    @Override
+    public List<SpreedSheetDTO> getByCategoryAndByUser(String category, int departmentId, long userId) {
+        Department department = this.departmentRepo.findById(departmentId).orElseThrow(()-> new ResourceNotFoundException("Department","Id",departmentId));
+        User user = this.userRepo.findById(userId).orElseThrow(()-> new ResourceNotFoundException("User","Id",userId));
+        List<SpreedSheetDTO> spreedSheetDTOS = this.spreedSheetRepo.findByCategoryAndDepartmentAndUser(category,departmentId,userId).stream().map(spreedSheet -> this.modelMapper.map(spreedSheet,SpreedSheetDTO.class)).toList();
+        return spreedSheetDTOS;
+    }
+
+    @Override
+    public List<SpreedSheetDTO> getByCategory(String category) {
+        List<SpreedSheetDTO> spreedSheetDTOS = this.spreedSheetRepo.findByCategory(category).stream().map(spreedSheet -> this.modelMapper.map(spreedSheet,SpreedSheetDTO.class)).toList();
+        return spreedSheetDTOS;
+    }
+
+    @Override
+    public SpreedSheetDTO createOfficeBudget(SpreedSheetDTO spreedSheetDTO, long userId) {
+        User user = this.userRepo.findById(userId).orElseThrow(()-> new ResourceNotFoundException("User","Id",userId));
+        SpreedSheet spreedSheet = this.modelMapper.map(spreedSheetDTO, SpreedSheet.class);
+        spreedSheet.setDepartment(null);
+        spreedSheet.setUser(user);
+        SpreedSheet save = this.spreedSheetRepo.save(spreedSheet);
+        return this.modelMapper.map(save,SpreedSheetDTO.class);
     }
 }

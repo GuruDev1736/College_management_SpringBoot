@@ -26,8 +26,10 @@ public class NotificationService {
                     .build();
 
             Message message = Message.builder()
-                    .setTopic("all") // Send to all devices subscribed to the "all" topic
+                    .setTopic("all")
                     .setNotification(notification)
+                    .putData("title", title)
+                    .putData("description", description)
                     .build();
 
             IMPNotice impNotice = new IMPNotice();

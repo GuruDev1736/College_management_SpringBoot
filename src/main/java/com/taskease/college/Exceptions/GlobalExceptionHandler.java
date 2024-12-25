@@ -75,5 +75,4 @@ public class GlobalExceptionHandler {
         ApiResponse apiResponse = new ApiResponse("500",message, false);
         return new ResponseEntity<ApiResponse>(apiResponse, HttpStatus.OK);
     }
-
 }

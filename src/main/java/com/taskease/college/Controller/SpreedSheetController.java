@@ -43,8 +43,26 @@ public class SpreedSheetController {
     }
     
     @GetMapping("/")
-    public ResponseEntity<ApiResponse<List<SpreedSheetDTO>>> getSpreedSheetsByCategory(@RequestParam("category") String category , @RequestParam("department") int departmentId) {
-        List<SpreedSheetDTO> spreedSheets = this.spreedSheetService.getByCategory(category,departmentId);
+    public ResponseEntity<ApiResponse<List<SpreedSheetDTO>>> getSpreedSheetsByCategoryAndDepartment(@RequestParam("category") String category , @RequestParam("department") int departmentId) {
+        List<SpreedSheetDTO> spreedSheets = this.spreedSheetService.getByCategoryAndDepartment(category,departmentId);
         return ResponseEntity.ok(new ApiResponse<>("200", "SpreedSheets Retrieved Successfully", spreedSheets));
+    }
+
+    @GetMapping("/category")
+    public ResponseEntity<ApiResponse<List<SpreedSheetDTO>>> getSpreedSheetByCategory(@RequestParam("category") String category) {
+        List<SpreedSheetDTO> spreedSheets = this.spreedSheetService.getByCategory(category);
+        return ResponseEntity.ok(new ApiResponse<>("200", "SpreedSheets Retrieved Successfully", spreedSheets));
+    }
+
+    @GetMapping("/user")
+    public ResponseEntity<ApiResponse<List<SpreedSheetDTO>>> getSpreadSheetByUserAndCategory(@RequestParam("category") String category , @RequestParam("department") int departmentId , @RequestParam("userId") long userId) {
+        List<SpreedSheetDTO> spreedSheets = this.spreedSheetService.getByCategoryAndByUser(category,departmentId,userId);
+        return ResponseEntity.ok(new ApiResponse<>("200", "SpreedSheets Retrieved Successfully", spreedSheets));
+    }
+
+    @PostMapping("/create/budget/{userId}")
+    public ResponseEntity<ApiResponse<SpreedSheetDTO>> createBudgetSheet(@RequestBody SpreedSheetDTO spreedSheetDTO ,@PathVariable("userId") long userId){
+        SpreedSheetDTO createdSpreedSheet = this.spreedSheetService.createOfficeBudget(spreedSheetDTO,userId);
+        return ResponseEntity.ok(new ApiResponse<>("200","SpreedSheet Created Successfully",createdSpreedSheet));
     }
 }

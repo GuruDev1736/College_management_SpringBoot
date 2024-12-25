@@ -54,37 +54,78 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<JWTResponse>> login(@RequestBody JWTRequest request) {
-
+        // Authenticate the user
         this.doAuthenticate(request.getEmail(), request.getPassword());
 
+        // Load user details from user service
         UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
+
+        // Generate JWT token
         String token = this.helper.generateToken(userDetails);
 
+        // Find user from repository
         Optional<User> userOpt = this.userRepo.findByEmail(userDetails.getUsername());
 
-        JWTResponse response;
-            // User login
-            User user = userOpt.get();
-            UserDTO userDTO = this.modelMapper.map(user, UserDTO.class);
+        if (userOpt.isEmpty()) {
+            return new ResponseEntity<>(new ApiResponse<>("404", "User not found", null), HttpStatus.NOT_FOUND);
+        }
 
+        User user = userOpt.get();
+
+        // Map user to UserDTO
+        UserDTO userDTO = this.modelMapper.map(user, UserDTO.class);
+
+        // Prepare JWT response with null check for department
+        JWTResponse response;
+
+        if (userDTO.getDepartment() != null) {
             response = JWTResponse.builder()
                     .token(token)
                     .userId(userDTO.getId())
+                    .departmentId(userDTO.getDepartment().getId())
                     .fullName(userDTO.getFullName())
                     .userProfilePic(userDTO.getProfile_pic())
                     .userRole(userDetails.getAuthorities().stream()
                             .map(GrantedAuthority::getAuthority)
                             .findFirst()
                             .orElse(""))
-                    .userName(userDetails.getUsername()).build();
-
-            return new ResponseEntity<>(new ApiResponse<>("200", "User Logged Successfully", response), HttpStatus.OK);
+                    .userName(userDetails.getUsername())
+                    .build();
+        } else {
+            // Super admin with no department
+            response = JWTResponse.builder()
+                    .token(token)
+                    .userId(userDTO.getId())
+                    .departmentId(0)
+                    .fullName(userDTO.getFullName())
+                    .userProfilePic(userDTO.getProfile_pic())
+                    .userRole(userDetails.getAuthorities().stream()
+                            .map(GrantedAuthority::getAuthority)
+                            .findFirst()
+                            .orElse(""))
+                    .userName(userDetails.getUsername())
+                    .build();
+        }
+        return new ResponseEntity<>(new ApiResponse<>("200", "User Logged Successfully", response), HttpStatus.OK);
     }
+
 
     @PostMapping("/faculty/register/{departmentId}")
     public ResponseEntity<ApiResponse<UserDTO>> createUser(@Valid @RequestBody UserDTO userDTO , @PathVariable int departmentId) {
         UserDTO createdUser = this.userService.createFaculty(userDTO,departmentId);
         return new ResponseEntity<>(new ApiResponse<>("200","Faculty Created Successfully",createdUser), HttpStatus.OK);
+    }
+
+    @PostMapping("/principle/register")
+    public ResponseEntity<ApiResponse<UserDTO>> createPrinciple(@Valid @RequestBody UserDTO userDTO) {
+        UserDTO createdUser = this.userService.createPrincipal(userDTO);
+        return new ResponseEntity<>(new ApiResponse<>("200","Principle Created Successfully",createdUser), HttpStatus.OK);
+    }
+
+    @PostMapping("/office/register")
+    public ResponseEntity<ApiResponse<UserDTO>> createOffice(@Valid @RequestBody UserDTO userDTO) {
+        UserDTO createdUser = this.userService.createOffice(userDTO);
+        return new ResponseEntity<>(new ApiResponse<>("200","Office Worker Created Successfully",createdUser), HttpStatus.OK);
     }
 
     @PostMapping("/super/register")

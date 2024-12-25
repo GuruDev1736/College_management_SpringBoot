@@ -33,6 +33,7 @@ public class UserDTO {
     private Boolean enabled = false ;
     private boolean completeProfile = false;
     private Date joinDate;
+    private DepartmentDTO department;
 
 
 }

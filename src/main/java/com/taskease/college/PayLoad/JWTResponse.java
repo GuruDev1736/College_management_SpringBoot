@@ -12,6 +12,7 @@ public class JWTResponse {
     private  String token ;
     private String userName ;
     private Long userId ;
+    private int departmentId;
     private String fullName;
     private String userRole;
     private String userProfilePic;

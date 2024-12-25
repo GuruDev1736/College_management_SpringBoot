@@ -46,9 +46,37 @@ public class UserServiceImpl implements UserService {
 
         User user = this.modelMapper.map(userDTO, User.class);
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        user.setDepartments(department);
+        user.setDepartment(department);
 
         Role role = this.roleRepo.findById(Constants.FACULTY_ROLE).get();
+        user.getRoles().add(role);
+        user.setJoinDate(new Date());
+
+        User saved = this.userRepo.save(user);
+        return this.modelMapper.map(saved,UserDTO.class);
+    }
+
+    @Override
+    public UserDTO createPrincipal(UserDTO userDTO) {
+        User user = this.modelMapper.map(userDTO, User.class);
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        user.setDepartment(null);
+
+        Role role = this.roleRepo.findById(Constants.PRINCIPLE_ROLE).get();
+        user.getRoles().add(role);
+        user.setJoinDate(new Date());
+
+        User saved = this.userRepo.save(user);
+        return this.modelMapper.map(saved,UserDTO.class);
+    }
+
+    @Override
+    public UserDTO createOffice(UserDTO userDTO) {
+        User user = this.modelMapper.map(userDTO, User.class);
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        user.setDepartment(null);
+
+        Role role = this.roleRepo.findById(Constants.OFFICE_ROLE).get();
         user.getRoles().add(role);
         user.setJoinDate(new Date());
 
@@ -60,13 +88,19 @@ public class UserServiceImpl implements UserService {
     public UserDTO createSuperAdmin(UserDTO userDTO) {
         User user = this.modelMapper.map(userDTO, User.class);
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        user.setDepartments(null);
+        user.setDepartment(null);
 
         Role role = this.roleRepo.findById(Constants.SUPER_ADMIN_ROLE).get();
         user.getRoles().add(role);
         user.setJoinDate(new Date());
         User saved = this.userRepo.save(user);
         return this.modelMapper.map(saved,UserDTO.class);
+    }
+
+    @Override
+    public UserDTO getUserById(long id) {
+        User user = this.userRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("User","Id",id));
+        return this.modelMapper.map(user,UserDTO.class);
     }
 
 }

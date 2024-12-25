@@ -6,10 +6,9 @@ import com.taskease.college.PayLoad.DepartmentDTO;
 import com.taskease.college.Service.DepartmentService;
 import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/department")
@@ -27,5 +26,9 @@ public class DepartmentController {
         return ResponseEntity.ok(new ApiResponse<>("200","Department Created Successfully",createdDepartment));
     }
 
-
+    @GetMapping("/")
+    public ResponseEntity<ApiResponse<List<DepartmentDTO>>> getAllDepartments(){
+        List<DepartmentDTO> list = this.departmentService.getAllDepartmentList();
+        return ResponseEntity.ok(new ApiResponse<>("200","Department Fetched Successfully",list));
+    }
 }

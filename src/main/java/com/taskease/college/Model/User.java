@@ -40,14 +40,14 @@ public class User {
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role", referencedColumnName = "id"))
     private Set<Role> roles = new HashSet<>();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "departmentId" , referencedColumnName = "id")
-    private Department departments;
+    private Department department;
 
-    @OneToMany(mappedBy = "user" , cascade = CascadeType.ALL , fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user" , cascade = CascadeType.ALL , fetch = FetchType.LAZY , orphanRemoval = true)
     private Set<SpreedSheet> spreedSheets = new HashSet<>();
 
-    @OneToMany(mappedBy = "user" , cascade = CascadeType.ALL , fetch = FetchType.EAGER)
-    private Set<Attendance> attendances = new HashSet<>();
+    @OneToMany(mappedBy = "user" , cascade = CascadeType.ALL , fetch = FetchType.LAZY , orphanRemoval = true)
+    private Set<DeadLine> deadLines = new HashSet<>();
 
 }

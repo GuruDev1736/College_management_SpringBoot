@@ -23,16 +23,16 @@ public class Department {
     private String name;
     private String description;
 
-    @OneToMany(mappedBy = "department" , cascade = CascadeType.ALL , fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "department" , cascade = CascadeType.ALL , fetch = FetchType.LAZY , orphanRemoval = true)
     private Set<Batch> batches = new HashSet<>();
 
-    @OneToMany(mappedBy = "department" , cascade = CascadeType.ALL , fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "department" , cascade = CascadeType.ALL , fetch = FetchType.LAZY , orphanRemoval = true)
     private Set<Student> students = new HashSet<>();
 
-    @OneToMany(mappedBy = "departments" , cascade =  CascadeType.ALL , fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "department" , cascade =  CascadeType.ALL , fetch = FetchType.LAZY , orphanRemoval = true)
     private Set<User> users = new HashSet<>();
 
-    @OneToMany(mappedBy = "department" , cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "department" ,cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private Set<SpreedSheet> spreedSheets = new HashSet<>();
 
 }
