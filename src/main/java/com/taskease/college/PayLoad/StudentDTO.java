@@ -22,4 +22,5 @@ public class StudentDTO {
     private String enrollment;
     private String profile_pic;
     private Date creationDate;
+    private Boolean hostelAdmission = false;
 }

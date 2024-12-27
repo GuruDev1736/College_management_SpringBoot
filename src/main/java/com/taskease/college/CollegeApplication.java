@@ -2,8 +2,10 @@ package com.taskease.college;
 
 import com.taskease.college.Constants.Constants;
 import com.taskease.college.Model.Role;
+import com.taskease.college.Model.Year;
 import com.taskease.college.Repository.RoleRepo;
 import com.taskease.college.Repository.UserRepo;
+import com.taskease.college.Repository.YearRepo;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -18,14 +20,16 @@ import java.util.List;
 public class CollegeApplication implements CommandLineRunner {
 
 	private final RoleRepo roleRepo ;
+	private final YearRepo yearRepo ;
 
 	private final UserRepo userRepo ;
 
 	private final PasswordEncoder passwordEncoder ;
 
-	public CollegeApplication(RoleRepo roleRepo, UserRepo userRepo, PasswordEncoder passwordEncoder) {
+	public CollegeApplication(RoleRepo roleRepo, YearRepo yearRepo, UserRepo userRepo, PasswordEncoder passwordEncoder) {
 		this.roleRepo = roleRepo;
-		this.userRepo = userRepo;
+        this.yearRepo = yearRepo;
+        this.userRepo = userRepo;
 		this.passwordEncoder = passwordEncoder;
 	}
 
@@ -75,6 +79,26 @@ public class CollegeApplication implements CommandLineRunner {
 
 			List<Role> roles = List.of(role, faculty, principal, librarian, cop, warden, office,student);
 			roleRepo.saveAll(roles);
+
+
+			Year year = new Year();
+			year.setId(Constants.FIRST_YEAR);
+			year.setYear(Constants.FIRST_YEAR_NAME);
+
+			Year second = new Year();
+			second.setId(Constants.SECOND_YEAR);
+			second.setYear(Constants.SECOND_YEAR_NAME);
+
+			Year third = new Year();
+			third.setId(Constants.THIRD_YEAR);
+			third.setYear(Constants.THIRD_YEAR_NAME);
+
+			Year fourth = new Year();
+			fourth.setId(Constants.FOURTH_YEAR);
+			fourth.setYear(Constants.FOURTH_YEAR_NAME);
+
+			List<Year> years = List.of(year, second, third, fourth);
+			yearRepo.saveAll(years);
 
 		}catch (Exception e ){
 			e.printStackTrace();

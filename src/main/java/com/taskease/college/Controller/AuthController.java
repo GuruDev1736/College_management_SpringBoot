@@ -134,6 +134,18 @@ public class AuthController {
         return new ResponseEntity<>(new ApiResponse<>("200","Super Admin Created Successfully",createdUser), HttpStatus.OK);
     }
 
+    @PostMapping("/lib/register")
+    public ResponseEntity<ApiResponse<UserDTO>> createLib(@Valid @RequestBody UserDTO userDTO) {
+        UserDTO createdUser = this.userService.createLibrarian(userDTO);
+        return new ResponseEntity<>(new ApiResponse<>("200","Librarian Created Successfully",createdUser), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<String>> deleteUser(@PathVariable("id") long id) {
+        userService.deleteUserById(id);
+        return ResponseEntity.ok(new ApiResponse<>("200","user Deleted Successfully",""));
+    }
+
 
     private void doAuthenticate(String email, String password) {
 

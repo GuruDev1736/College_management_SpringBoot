@@ -85,6 +85,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserDTO createLibrarian(UserDTO userDTO) {
+        User user = this.modelMapper.map(userDTO, User.class);
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        user.setDepartment(null);
+
+        Role role = this.roleRepo.findById(Constants.LIB_ROLE).get();
+        user.getRoles().add(role);
+        user.setJoinDate(new Date());
+
+        User saved = this.userRepo.save(user);
+        return this.modelMapper.map(saved,UserDTO.class);
+    }
+
+    @Override
     public UserDTO createSuperAdmin(UserDTO userDTO) {
         User user = this.modelMapper.map(userDTO, User.class);
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
@@ -101,6 +115,16 @@ public class UserServiceImpl implements UserService {
     public UserDTO getUserById(long id) {
         User user = this.userRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("User","Id",id));
         return this.modelMapper.map(user,UserDTO.class);
+    }
+
+    @Override
+    public void deleteUserById(long id) {
+        User user = this.userRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("User","Id",id));
+        user.getRoles().clear(); // Clear associated roles
+        user.getSpreedSheets().clear(); // Clear associated spreadsheets
+        user.getDeadLines().clear(); // Clear associated deadlines
+        user.getBooks().clear();
+        userRepo.delete(user);
     }
 
 }

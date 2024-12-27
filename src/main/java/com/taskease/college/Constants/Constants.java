@@ -20,4 +20,15 @@ public class Constants {
     public static final String OFFICE_ROLE_NAME = "ROLE_OFFICE";
     public static final String STUDENT_ROLE_NAME = "ROLE_STUDENT";
 
+
+    public static final int FIRST_YEAR = 1;
+    public static final int SECOND_YEAR = 2;
+    public static final int THIRD_YEAR = 3;
+    public static final int FOURTH_YEAR = 4;
+
+    public static final String FIRST_YEAR_NAME = "FIRST_YEAR";
+    public static final String SECOND_YEAR_NAME = "SECOND_YEAR";
+    public static final String THIRD_YEAR_NAME = "THIRD_YEAR";
+    public static final String FOURTH_YEAR_NAME = "FOURTH_YEAR";
+
 }

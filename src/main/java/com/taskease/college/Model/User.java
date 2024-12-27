@@ -50,4 +50,8 @@ public class User {
     @OneToMany(mappedBy = "user" , cascade = CascadeType.ALL , fetch = FetchType.LAZY , orphanRemoval = true)
     private Set<DeadLine> deadLines = new HashSet<>();
 
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY,orphanRemoval = true)
+    private Set<Books> books = new HashSet<>();
+
+
 }
