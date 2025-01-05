@@ -2,11 +2,10 @@ package com.taskease.college.Controller;
 
 
 import com.taskease.college.Exceptions.ErrorException;
+import com.taskease.college.Model.Student;
 import com.taskease.college.Model.User;
-import com.taskease.college.PayLoad.ApiResponse;
-import com.taskease.college.PayLoad.JWTRequest;
-import com.taskease.college.PayLoad.JWTResponse;
-import com.taskease.college.PayLoad.UserDTO;
+import com.taskease.college.PayLoad.*;
+import com.taskease.college.Repository.StudentRepo;
 import com.taskease.college.Repository.UserRepo;
 import com.taskease.college.Security.JwtHelper;
 import com.taskease.college.Service.UserService;
@@ -38,17 +37,19 @@ public class AuthController {
     private final ModelMapper modelMapper;
 
     private final UserRepo userRepo;
+    private final StudentRepo studentRepo;
 
 
 
     private final JwtHelper helper;
 
-    public AuthController(UserDetailsService userDetailsService, AuthenticationManager manager, UserService userService, ModelMapper modelMapper, UserRepo userRepo, JwtHelper helper) {
+    public AuthController(UserDetailsService userDetailsService, AuthenticationManager manager, UserService userService, ModelMapper modelMapper, UserRepo userRepo, StudentRepo studentRepo, JwtHelper helper) {
         this.userDetailsService = userDetailsService;
         this.manager = manager;
         this.userService = userService;
         this.modelMapper = modelMapper;
         this.userRepo = userRepo;
+        this.studentRepo = studentRepo;
         this.helper = helper;
     }
 
@@ -57,56 +58,68 @@ public class AuthController {
         // Authenticate the user
         this.doAuthenticate(request.getEmail(), request.getPassword());
 
-        // Load user details from user service
+        // Load user details from the user details service
         UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
 
         // Generate JWT token
         String token = this.helper.generateToken(userDetails);
 
-        // Find user from repository
+        // Check if the user exists as a User
         Optional<User> userOpt = this.userRepo.findByEmail(userDetails.getUsername());
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            UserDTO userDTO = this.modelMapper.map(user, UserDTO.class);
 
-        if (userOpt.isEmpty()) {
-            return new ResponseEntity<>(new ApiResponse<>("404", "User not found", null), HttpStatus.NOT_FOUND);
+            // Prepare response for User
+            JWTResponse response = createJwtResponseForUser(token, userDetails, userDTO);
+            return new ResponseEntity<>(new ApiResponse<>("200", "User Logged Successfully", response), HttpStatus.OK);
         }
 
-        User user = userOpt.get();
+        // Check if the user exists as a Student
+        Optional<Student> studentOpt = this.studentRepo.findByEmail(userDetails.getUsername());
+        if (studentOpt.isPresent()) {
+            Student student = studentOpt.get();
+            StudentDTO studentDTO = this.modelMapper.map(student, StudentDTO.class);
 
-        // Map user to UserDTO
-        UserDTO userDTO = this.modelMapper.map(user, UserDTO.class);
-
-        // Prepare JWT response with null check for department
-        JWTResponse response;
-
-        if (userDTO.getDepartment() != null) {
-            response = JWTResponse.builder()
-                    .token(token)
-                    .userId(userDTO.getId())
-                    .departmentId(userDTO.getDepartment().getId())
-                    .fullName(userDTO.getFullName())
-                    .userProfilePic(userDTO.getProfile_pic())
-                    .userRole(userDetails.getAuthorities().stream()
-                            .map(GrantedAuthority::getAuthority)
-                            .findFirst()
-                            .orElse(""))
-                    .userName(userDetails.getUsername())
-                    .build();
-        } else {
-            // Super admin with no department
-            response = JWTResponse.builder()
-                    .token(token)
-                    .userId(userDTO.getId())
-                    .departmentId(0)
-                    .fullName(userDTO.getFullName())
-                    .userProfilePic(userDTO.getProfile_pic())
-                    .userRole(userDetails.getAuthorities().stream()
-                            .map(GrantedAuthority::getAuthority)
-                            .findFirst()
-                            .orElse(""))
-                    .userName(userDetails.getUsername())
-                    .build();
+            // Prepare response for Student
+            JWTResponse response = createJwtResponseForStudent(token, userDetails, studentDTO);
+            return new ResponseEntity<>(new ApiResponse<>("200", "Student Logged Successfully", response), HttpStatus.OK);
         }
-        return new ResponseEntity<>(new ApiResponse<>("200", "User Logged Successfully", response), HttpStatus.OK);
+
+        // If neither User nor Student is found
+        return new ResponseEntity<>(new ApiResponse<>("404", "User or Student not found", null), HttpStatus.NOT_FOUND);
+    }
+
+    // Helper method to create JWTResponse for User
+    private JWTResponse createJwtResponseForUser(String token, UserDetails userDetails, UserDTO userDTO) {
+        return JWTResponse.builder()
+                .token(token)
+                .userId(userDTO.getId())
+                .departmentId(userDTO.getDepartment() != null ? userDTO.getDepartment().getId() : 0)
+                .fullName(userDTO.getFullName())
+                .userProfilePic(userDTO.getProfile_pic())
+                .userRole(userDetails.getAuthorities().stream()
+                        .map(GrantedAuthority::getAuthority)
+                        .findFirst()
+                        .orElse(""))
+                .userName(userDetails.getUsername())
+                .build();
+    }
+
+    // Helper method to create JWTResponse for Student
+    private JWTResponse createJwtResponseForStudent(String token, UserDetails userDetails, StudentDTO studentDTO) {
+        return JWTResponse.builder()
+                .token(token)
+                .userId(studentDTO.getId())
+                .departmentId(studentDTO.getDepartment() != null ? studentDTO.getDepartment().getId() : 0)
+                .fullName(studentDTO.getFullName())
+                .userProfilePic(studentDTO.getProfile_pic())
+                .userRole(userDetails.getAuthorities().stream()
+                        .map(GrantedAuthority::getAuthority)
+                        .findFirst()
+                        .orElse(""))
+                .userName(userDetails.getUsername())
+                .build();
     }
 
 
@@ -138,6 +151,18 @@ public class AuthController {
     public ResponseEntity<ApiResponse<UserDTO>> createLib(@Valid @RequestBody UserDTO userDTO) {
         UserDTO createdUser = this.userService.createLibrarian(userDTO);
         return new ResponseEntity<>(new ApiResponse<>("200","Librarian Created Successfully",createdUser), HttpStatus.OK);
+    }
+
+    @PostMapping("/cooperative/register")
+    public ResponseEntity<ApiResponse<UserDTO>> createCoOperative(@Valid @RequestBody UserDTO userDTO) {
+        UserDTO createdUser = this.userService.createCoOperative(userDTO);
+        return new ResponseEntity<>(new ApiResponse<>("200","Co-Operative Created Successfully",createdUser), HttpStatus.OK);
+    }
+
+    @PostMapping("/hostel/register")
+    public ResponseEntity<ApiResponse<UserDTO>> createWarden(@Valid @RequestBody UserDTO userDTO) {
+        UserDTO createdUser = this.userService.createWarden(userDTO);
+        return new ResponseEntity<>(new ApiResponse<>("200","Warden Created Successfully",createdUser), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

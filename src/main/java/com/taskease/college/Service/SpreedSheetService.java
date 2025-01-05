@@ -14,4 +14,5 @@ public interface SpreedSheetService {
     List<SpreedSheetDTO> getByCategoryAndByUser(String category , int departmentId , long userId);
     List<SpreedSheetDTO> getByCategory(String category);
     SpreedSheetDTO createOfficeBudget(SpreedSheetDTO spreedSheetDTO,long userId);
+    SpreedSheetDTO createPenalty(SpreedSheetDTO spreedSheetDTO,long userId);
 }

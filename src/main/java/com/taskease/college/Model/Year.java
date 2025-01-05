@@ -18,6 +18,7 @@ import java.util.Set;
 public class Year {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String year;
 

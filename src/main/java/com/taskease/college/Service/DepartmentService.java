@@ -10,4 +10,5 @@ public interface DepartmentService{
 
     DepartmentDTO creteDepartment(DepartmentDTO departmentDTO);
     List<DepartmentDTO> getAllDepartmentList();
+    void deleteDepartment(int departmentId);
 }

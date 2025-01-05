@@ -1,5 +1,6 @@
 package com.taskease.college.Service.ServiceImpl;
 
+import com.taskease.college.Exceptions.ResourceNotFoundException;
 import com.taskease.college.Model.Department;
 import com.taskease.college.PayLoad.DepartmentDTO;
 import com.taskease.college.Repository.DepartmentRepo;
@@ -32,5 +33,11 @@ public class DepartmentServiceImpl implements DepartmentService {
     public List<DepartmentDTO> getAllDepartmentList() {
         List<DepartmentDTO> list = this.departmentRepo.findAll().stream().map(dto -> this.modelMapper.map(dto, DepartmentDTO.class)).toList();
         return list;
+    }
+
+    @Override
+    public void deleteDepartment(int departmentId) {
+        Department department = departmentRepo.findById(departmentId).orElseThrow(()-> new ResourceNotFoundException("Department","Id",departmentId));
+        this.departmentRepo.deleteDepartmentById(departmentId);
     }
 }

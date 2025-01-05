@@ -42,4 +42,10 @@ public class StoreController {
         storeService.deleteStore(category);
         return ResponseEntity.ok(new ApiResponse<>("200","Store Deleted Successfully",""));
     }
+
+    @GetMapping("/status")
+    public ResponseEntity<ApiResponse<Boolean>> getStoreStatus(@RequestParam("category") String category) {
+        StoreDTO storeDTO = this.storeService.getStore(category);
+        return ResponseEntity.ok(new ApiResponse<>("200","success",storeDTO.getStatus()));
+    }
 }

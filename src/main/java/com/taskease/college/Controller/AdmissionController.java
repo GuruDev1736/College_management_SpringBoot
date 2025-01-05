@@ -7,6 +7,8 @@ import com.taskease.college.Service.AdmissionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/admission")
 public class AdmissionController {
@@ -34,5 +36,11 @@ public class AdmissionController {
     public ResponseEntity<ApiResponse<String>> rejectAdmission(@PathVariable long admissionId) {
         admissionService.rejectAdmission(admissionId);
         return ResponseEntity.ok(new ApiResponse<>("200","Admission Rejected Successfully",""));
+    }
+
+    @GetMapping("/")
+    public ResponseEntity<ApiResponse<List<AdmissionDTO>>> getAllAdmissions() {
+        List<AdmissionDTO> admissionDTOS = this.admissionService.getAllAdmission();
+        return ResponseEntity.ok(new ApiResponse<>("200","Admission List",admissionDTOS));
     }
 }

@@ -25,7 +25,7 @@ public class SpreedSheet {
     @Column(unique = true, nullable = false)
     private String title ;
     private String description ;
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String link ;
     private String imageLink;
     @Column(nullable = false)

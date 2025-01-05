@@ -85,12 +85,40 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserDTO createWarden(UserDTO userDTO) {
+        User user = this.modelMapper.map(userDTO, User.class);
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        user.setDepartment(null);
+
+        Role role = this.roleRepo.findById(Constants.WARDEN_ROLE).get();
+        user.getRoles().add(role);
+        user.setJoinDate(new Date());
+
+        User saved = this.userRepo.save(user);
+        return this.modelMapper.map(saved,UserDTO.class);
+    }
+
+    @Override
     public UserDTO createLibrarian(UserDTO userDTO) {
         User user = this.modelMapper.map(userDTO, User.class);
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         user.setDepartment(null);
 
         Role role = this.roleRepo.findById(Constants.LIB_ROLE).get();
+        user.getRoles().add(role);
+        user.setJoinDate(new Date());
+
+        User saved = this.userRepo.save(user);
+        return this.modelMapper.map(saved,UserDTO.class);
+    }
+
+    @Override
+    public UserDTO createCoOperative(UserDTO userDTO) {
+        User user = this.modelMapper.map(userDTO, User.class);
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        user.setDepartment(null);
+
+        Role role = this.roleRepo.findById(Constants.COOPERATIVE_ROLE).get();
         user.getRoles().add(role);
         user.setJoinDate(new Date());
 

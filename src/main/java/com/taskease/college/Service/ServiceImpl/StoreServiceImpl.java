@@ -40,6 +40,12 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
+    public StoreDTO getStore(String category) {
+        Store store = storeRepo.findByCategory(category).orElseThrow(()-> new ResourceNotFoundException("Store","Category",0));
+        return modelMapper.map(store, StoreDTO.class);
+    }
+
+    @Override
     public void deleteStore(String category) {
         Store store = storeRepo.findByCategory(category).orElseThrow(()-> new ResourceNotFoundException("Store","Category",0));
         storeRepo.delete(store);

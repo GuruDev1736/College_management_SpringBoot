@@ -10,6 +10,9 @@ import com.taskease.college.Service.AdmissionService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class AdmissionServiceImpl implements AdmissionService {
 
@@ -50,5 +53,10 @@ public class AdmissionServiceImpl implements AdmissionService {
         Student student = this.studentRepo.findById(admission.getStudent().getId()).orElseThrow(()-> new ResourceNotFoundException("Student","id",admission.getStudent().getId()));
         student.setHostelAdmission(false);
         this.studentRepo.save(student);
+    }
+
+    @Override
+    public List<AdmissionDTO> getAllAdmission() {
+        return admissionRepo.findAll().stream().map(admission -> this.modelMapper.map(admission, AdmissionDTO.class)).toList();
     }
 }

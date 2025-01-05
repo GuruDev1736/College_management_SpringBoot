@@ -8,6 +8,7 @@ public interface StoreService {
 
     StoreDTO createStore(StoreDTO storeDTO);
     String updateStatus(String category);
+    StoreDTO getStore(String category);
     void deleteStore(String category);
     List<StoreDTO> getStoreList();
 }

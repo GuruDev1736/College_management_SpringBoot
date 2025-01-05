@@ -2,7 +2,9 @@ package com.taskease.college.Service.ServiceImpl;
 
 
 import com.taskease.college.Model.Role;
+import com.taskease.college.Model.Student;
 import com.taskease.college.Model.User;
+import com.taskease.college.Repository.StudentRepo;
 import com.taskease.college.Repository.UserRepo;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -18,9 +20,11 @@ import java.util.stream.Collectors;
 public class CustomUserDetailService implements UserDetailsService {
 
     private final UserRepo userRepo;
+    private final StudentRepo studentRepo;
 
-    public CustomUserDetailService(UserRepo userRepo) {
+    public CustomUserDetailService(UserRepo userRepo, StudentRepo studentRepo) {
         this.userRepo = userRepo;
+        this.studentRepo = studentRepo;
     }
 
 
@@ -29,7 +33,7 @@ public class CustomUserDetailService implements UserDetailsService {
         // Check if the username belongs to a user or company
         UserDetails userDetails = loadUserDetails(username);
         if (userDetails == null) {
-            throw new UsernameNotFoundException("User or Company not found with username: " + username);
+            throw new UsernameNotFoundException("User or Student not found with username: " + username);
         }
         return userDetails;
     }
@@ -40,6 +44,12 @@ public class CustomUserDetailService implements UserDetailsService {
         if (user != null) {
             return createUserDetails(user.getEmail(), user.getPassword(), user.getRoles());
         }
+
+        Student student = studentRepo.findByEmail(username).orElse(null);
+        if (student != null) {
+            return createStudentDetails(student.getEmail(), student.getPassword(), student.getRoles());
+        }
+
 
         return null; // Return null if neither User nor Company found
     }
@@ -52,8 +62,7 @@ public class CustomUserDetailService implements UserDetailsService {
         return new org.springframework.security.core.userdetails.User(email, password, authorities);
     }
 
-    private UserDetails createCompanyDetails(String email, String password, Set<Role> roles) {
-        // Create and return CompanyDetails if you have a specific implementation
+    private UserDetails createStudentDetails(String email, String password, Set<Role> roles) {
         Set<GrantedAuthority> authorities = roles
                 .stream()
                 .map(role -> new SimpleGrantedAuthority(role.getRoleName()))

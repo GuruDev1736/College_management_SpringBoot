@@ -21,6 +21,9 @@ public class StudentDTO {
     private String phone;
     private String enrollment;
     private String profile_pic;
-    private Date creationDate;
+    private Date creationDate = new Date();
+    private YearDTO year;
+    private DepartmentDTO department;
+    private BatchDTO batch;
     private Boolean hostelAdmission = false;
 }

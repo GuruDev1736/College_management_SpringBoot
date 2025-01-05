@@ -105,4 +105,15 @@ public class SpreedSheetServiceImpl implements SpreedSheetService {
         SpreedSheet save = this.spreedSheetRepo.save(spreedSheet);
         return this.modelMapper.map(save,SpreedSheetDTO.class);
     }
+
+    @Override
+    public SpreedSheetDTO createPenalty(SpreedSheetDTO spreedSheetDTO, long userId) {
+        User user = this.userRepo.findById(userId).orElseThrow(()-> new ResourceNotFoundException("User","Id",userId));
+        SpreedSheet spreedSheet = this.modelMapper.map(spreedSheetDTO, SpreedSheet.class);
+        spreedSheet.setImageLink(null);
+        spreedSheet.setDepartment(null);
+        spreedSheet.setUser(user);
+        SpreedSheet save = this.spreedSheetRepo.save(spreedSheet);
+        return this.modelMapper.map(save,SpreedSheetDTO.class);
+    }
 }
