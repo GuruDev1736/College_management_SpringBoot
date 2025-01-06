@@ -54,7 +54,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<JWTResponse>> login(@RequestBody JWTRequest request) {
+    public ResponseEntity<ApiResponse<JWTStudentResponse>> login(@RequestBody JWTRequest request) {
         // Authenticate the user
         this.doAuthenticate(request.getEmail(), request.getPassword());
 
@@ -71,8 +71,8 @@ public class AuthController {
             UserDTO userDTO = this.modelMapper.map(user, UserDTO.class);
 
             // Prepare response for User
-            JWTResponse response = createJwtResponseForUser(token, userDetails, userDTO);
-            return new ResponseEntity<>(new ApiResponse<>("200", "User Logged Successfully", response), HttpStatus.OK);
+            JWTStudentResponse response = createJwtResponseForUser(token, userDetails, userDTO);
+            return new ResponseEntity<>(new ApiResponse<>("200", "User Logged In Successfully", response), HttpStatus.OK);
         }
 
         // Check if the user exists as a Student
@@ -82,43 +82,52 @@ public class AuthController {
             StudentDTO studentDTO = this.modelMapper.map(student, StudentDTO.class);
 
             // Prepare response for Student
-            JWTResponse response = createJwtResponseForStudent(token, userDetails, studentDTO);
-            return new ResponseEntity<>(new ApiResponse<>("200", "Student Logged Successfully", response), HttpStatus.OK);
+            JWTStudentResponse response = createJwtResponseForStudent(token, userDetails, studentDTO);
+            return new ResponseEntity<>(new ApiResponse<>("200", "Student Logged In Successfully", response), HttpStatus.OK);
         }
 
         // If neither User nor Student is found
         return new ResponseEntity<>(new ApiResponse<>("404", "User or Student not found", null), HttpStatus.NOT_FOUND);
     }
 
-    // Helper method to create JWTResponse for User
-    private JWTResponse createJwtResponseForUser(String token, UserDetails userDetails, UserDTO userDTO) {
-        return JWTResponse.builder()
+    private JWTStudentResponse createJwtResponseForStudent(String token, UserDetails userDetails, StudentDTO studentDTO) {
+        return JWTStudentResponse.builder()
                 .token(token)
-                .userId(userDTO.getId())
-                .departmentId(userDTO.getDepartment() != null ? userDTO.getDepartment().getId() : 0)
-                .fullName(userDTO.getFullName())
-                .userProfilePic(userDTO.getProfile_pic())
+                .userId(studentDTO.getId())
+                .yearName(studentDTO.getYear() != null ? studentDTO.getYear().getYear() : "")
+                .yearId(studentDTO.getYear() != null ? studentDTO.getYear().getId() : 0)
+                .departmentName(studentDTO.getDepartment() != null ? studentDTO.getDepartment().getName() : "")
+                .departmentId(studentDTO.getDepartment() != null ? studentDTO.getDepartment().getId() : 0)
+                .batchId(studentDTO.getBatch() != null ? studentDTO.getBatch().getId() : 0)
+                .batchName(studentDTO.getBatch() != null ? studentDTO.getBatch().getBatchName() : "")
+                .hostelAllowance(studentDTO.getHostelAdmission() != null ? studentDTO.getHostelAdmission() : false)
+                .fullName(studentDTO.getFullName() != null ? studentDTO.getFullName() : "")
+                .userProfilePic(studentDTO.getProfile_pic() != null ? studentDTO.getProfile_pic() : "")
                 .userRole(userDetails.getAuthorities().stream()
                         .map(GrantedAuthority::getAuthority)
                         .findFirst()
                         .orElse(""))
-                .userName(userDetails.getUsername())
+                .userName(userDetails.getUsername() != null ? userDetails.getUsername() : "")
                 .build();
     }
 
-    // Helper method to create JWTResponse for Student
-    private JWTResponse createJwtResponseForStudent(String token, UserDetails userDetails, StudentDTO studentDTO) {
-        return JWTResponse.builder()
+    private JWTStudentResponse createJwtResponseForUser(String token, UserDetails userDetails, UserDTO userDTO) {
+        return JWTStudentResponse.builder()
                 .token(token)
-                .userId(studentDTO.getId())
-                .departmentId(studentDTO.getDepartment() != null ? studentDTO.getDepartment().getId() : 0)
-                .fullName(studentDTO.getFullName())
-                .userProfilePic(studentDTO.getProfile_pic())
+                .userId(userDTO.getId())
+                .yearId(0)
+                .yearName("")
+                .departmentName(userDTO.getDepartment() != null ? userDTO.getDepartment().getName() : "")
+                .departmentId(userDTO.getDepartment() != null ? userDTO.getDepartment().getId() : 0)
+                .batchName("")
+                .batchId(0)
+                .fullName(userDTO.getFullName() != null ? userDTO.getFullName() : "")
+                .userProfilePic(userDTO.getProfile_pic() != null ? userDTO.getProfile_pic() : "")
                 .userRole(userDetails.getAuthorities().stream()
                         .map(GrantedAuthority::getAuthority)
                         .findFirst()
                         .orElse(""))
-                .userName(userDetails.getUsername())
+                .userName(userDetails.getUsername() != null ? userDetails.getUsername() : "")
                 .build();
     }
 

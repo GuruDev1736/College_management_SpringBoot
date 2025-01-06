@@ -1,7 +1,11 @@
 package com.taskease.college.Service;
 
 
+import com.taskease.college.Model.Role;
+import com.taskease.college.PayLoad.RoleDTO;
 import com.taskease.college.PayLoad.UserDTO;
+
+import java.util.List;
 
 public interface UserService {
 
@@ -14,4 +18,6 @@ public interface UserService {
     UserDTO createSuperAdmin(UserDTO userDTO);
     UserDTO getUserById(long id);
     void deleteUserById(long id);
+    List<UserDTO> getUsersByRole(String role);
+    List<RoleDTO> getAllRoles();
 }

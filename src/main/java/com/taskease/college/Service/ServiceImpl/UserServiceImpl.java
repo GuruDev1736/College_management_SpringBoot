@@ -6,6 +6,7 @@ import com.taskease.college.Exceptions.ResourceNotFoundException;
 import com.taskease.college.Model.Department;
 import com.taskease.college.Model.Role;
 import com.taskease.college.Model.User;
+import com.taskease.college.PayLoad.RoleDTO;
 import com.taskease.college.PayLoad.UserDTO;
 import com.taskease.college.Repository.DepartmentRepo;
 import com.taskease.college.Repository.RoleRepo;
@@ -16,6 +17,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -153,6 +156,18 @@ public class UserServiceImpl implements UserService {
         user.getDeadLines().clear(); // Clear associated deadlines
         user.getBooks().clear();
         userRepo.delete(user);
+    }
+
+    @Override
+    public List<UserDTO> getUsersByRole(String role) {
+        List<UserDTO> userDTOS = userRepo.findByRoleName(role).stream().map(user -> this.modelMapper.map(user,UserDTO.class)).toList();
+        return userDTOS;
+    }
+
+    @Override
+    public List<RoleDTO> getAllRoles() {
+        List<RoleDTO> roleDTOS = roleRepo.findAll().stream().map(role -> this.modelMapper.map(role,RoleDTO.class)).toList();
+        return roleDTOS;
     }
 
 }
