@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.sql.Time;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -31,4 +32,7 @@ public class Batch {
 
     @OneToMany(mappedBy = "batch" , cascade = CascadeType.ALL , fetch = FetchType.EAGER)
     private Set<Student> students = new HashSet<>();
+
+    @OneToMany(mappedBy = "batch" , cascade = CascadeType.ALL , fetch = FetchType.EAGER)
+    private Set<TimeTable> timeTables = new HashSet<>();
 }

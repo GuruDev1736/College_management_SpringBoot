@@ -35,4 +35,7 @@ public class Department {
     @OneToMany(mappedBy = "department" ,cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private Set<SpreedSheet> spreedSheets = new HashSet<>();
 
+    @OneToMany(mappedBy = "department" ,cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private Set<TimeTable> timeTables = new HashSet<>();
+
 }

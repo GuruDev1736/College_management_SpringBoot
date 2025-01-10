@@ -24,4 +24,8 @@ public class Year {
 
     @OneToMany(mappedBy = "year", cascade = CascadeType.ALL, fetch = FetchType.LAZY , orphanRemoval = true)
     private Set<Student> students = new HashSet<>();
+
+    @OneToMany(mappedBy = "year", cascade = CascadeType.ALL, fetch = FetchType.LAZY , orphanRemoval = true)
+    private Set<TimeTable> timeTables = new HashSet<>();
+
 }
