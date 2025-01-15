@@ -29,4 +29,10 @@ public class BannerController {
         List<BannerDTO> bannerDTOS = this.bannerService.getAllBanners();
         return ResponseEntity.ok(new ApiResponse<>("200","Banner List Fetched Successfully",bannerDTOS));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<String>> deleteBanner(@PathVariable int id) {
+        this.bannerService.deleteBanner(id);
+        return ResponseEntity.ok(new ApiResponse<>("200","Banner Deleted Successfully",""));
+    }
 }

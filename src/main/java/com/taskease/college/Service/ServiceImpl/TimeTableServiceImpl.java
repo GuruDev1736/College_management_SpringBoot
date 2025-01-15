@@ -69,6 +69,7 @@ public class TimeTableServiceImpl implements TimeTableService {
         timeTable.setTitle(timeTableDTO.getTitle());
         timeTable.setDescription(timeTableDTO.getDescription());
         timeTable.setDownloadUrl(timeTableDTO.getDownloadUrl());
+        timeTable.setCategory(timeTableDTO.getCategory());
         TimeTable updated = timeTableRepo.save(timeTable);
         return modelMapper.map(updated, TimeTableDTO.class);
     }
@@ -76,7 +77,7 @@ public class TimeTableServiceImpl implements TimeTableService {
     @Override
     public void deleteTimeTable(int id) {
         TimeTable timeTable = timeTableRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("TimeTable","id",id));
-        timeTableRepo.delete(timeTable);
+        timeTableRepo.deleteTimeTableById(id);
     }
 
     @Override
@@ -87,6 +88,11 @@ public class TimeTableServiceImpl implements TimeTableService {
 
     @Override
     public List<TimeTableDTO> getTimeTableByAllDetails(int yearId, int departmentId, int batchId, String category) {
+
+        Year year = yearRepo.findById(yearId).orElseThrow(() -> new ResourceNotFoundException("Year","Id",yearId));
+        Department department = departmentRepo.findById(departmentId).orElseThrow(() -> new ResourceNotFoundException("Department","Id",departmentId));
+        Batch batch = batchRepo.findById(batchId).orElseThrow(() -> new ResourceNotFoundException("Batch","Id",batchId));
+
         List<TimeTableDTO> timeTableDTOS = timeTableRepo.findByDetails(yearId,departmentId,batchId,category).stream().map(timeTable -> modelMapper.map(timeTable, TimeTableDTO.class)).toList();
         return timeTableDTOS;
     }

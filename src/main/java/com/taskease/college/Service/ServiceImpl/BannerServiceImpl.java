@@ -1,5 +1,6 @@
 package com.taskease.college.Service.ServiceImpl;
 
+import com.taskease.college.Exceptions.ResourceNotFoundException;
 import com.taskease.college.Model.Banner;
 import com.taskease.college.PayLoad.BannerDTO;
 import com.taskease.college.Repository.BannerRepo;
@@ -32,5 +33,11 @@ public class BannerServiceImpl implements BannerService {
     public List<BannerDTO> getAllBanners() {
         List<BannerDTO> banners = bannerRepo.findAll().stream().map(banner -> modelMapper.map(banner, BannerDTO.class)).toList();
         return banners;
+    }
+
+    @Override
+    public void deleteBanner(int bannerId) {
+        Banner banner = bannerRepo.findById(bannerId).orElseThrow(() -> new ResourceNotFoundException("Banner","id",bannerId));
+        bannerRepo.delete(banner);
     }
 }

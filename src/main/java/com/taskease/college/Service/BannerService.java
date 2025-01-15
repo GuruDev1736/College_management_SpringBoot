@@ -8,4 +8,5 @@ public interface BannerService {
 
     BannerDTO createBanner(BannerDTO bannerDTO);
     List<BannerDTO> getAllBanners();
+    void deleteBanner(int bannerId);
 }

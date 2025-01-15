@@ -31,4 +31,10 @@ public class DepartmentController {
         List<DepartmentDTO> list = this.departmentService.getAllDepartmentList();
         return ResponseEntity.ok(new ApiResponse<>("200","Department Fetched Successfully",list));
     }
+
+    @DeleteMapping("/{departmentId}")
+    public ResponseEntity<ApiResponse<String>> deleteDepartment(@PathVariable("departmentId") int departmentId){
+        this.departmentService.deleteDepartment(departmentId);
+        return ResponseEntity.ok(new ApiResponse<>("200","Department Deleted Successfully",""));
+    }
 }

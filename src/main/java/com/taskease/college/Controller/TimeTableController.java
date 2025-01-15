@@ -44,9 +44,9 @@ public class TimeTableController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<TimeTableDTO>> deleteTimeTable(@PathVariable int id) {
+    public ResponseEntity<ApiResponse<String>> deleteTimeTable(@PathVariable int id) {
         timeTableService.deleteTimeTable(id);
-        return ResponseEntity.ok(new ApiResponse<>("200","Time Table Deleted", timeTableService.getTimeTable(id)));
+        return ResponseEntity.ok(new ApiResponse<>("200","Time Table Deleted",""));
     }
 
     @GetMapping("/category")
