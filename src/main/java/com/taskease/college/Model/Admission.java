@@ -19,11 +19,14 @@ public class Admission {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @Column(unique = true, nullable = false)
     private String studentName;
     private String department;
     private String year;
     private String address;
+    @Column(unique = true, nullable = false)
     private String studentPhoneNo;
+    @Column(unique = true, nullable = false)
     private String parentPhoneNo;
     private String schoolPercentage;
     private String diplomaPercentage;

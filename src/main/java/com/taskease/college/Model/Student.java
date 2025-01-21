@@ -1,5 +1,6 @@
 package com.taskease.college.Model;
 
+import com.google.firebase.database.core.Repo;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -57,5 +58,8 @@ public class Student {
 
     @OneToMany(mappedBy = "student",cascade = CascadeType.ALL , fetch = FetchType.LAZY , orphanRemoval = true)
     private Set<Bonafide> bonafides = new HashSet<>();
+
+    @OneToMany(mappedBy = "student",cascade = CascadeType.ALL , fetch = FetchType.LAZY , orphanRemoval = true)
+    private Set<Report> reports = new HashSet<>();
 
 }

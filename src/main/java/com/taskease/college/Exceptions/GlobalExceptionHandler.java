@@ -44,7 +44,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ErrorException.class)
     public ResponseEntity<ApiResponse> InvalidCredentials(ErrorException e) {
         String message = e.getMessage();
-        ApiResponse apiResponse = new ApiResponse("500",message, false);
+        ApiResponse apiResponse = new ApiResponse("500",message, null);
         return new ResponseEntity<ApiResponse>(apiResponse, HttpStatus.OK);
     }
 

@@ -4,4 +4,5 @@ import com.taskease.college.Model.Admission;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface AdmissionRepo extends JpaRepository<Admission, Long> {
+    boolean existsByStudentId(long studentId);
 }

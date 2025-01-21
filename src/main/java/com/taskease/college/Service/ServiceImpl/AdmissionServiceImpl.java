@@ -1,9 +1,11 @@
 package com.taskease.college.Service.ServiceImpl;
 
+import com.taskease.college.Exceptions.ErrorException;
 import com.taskease.college.Exceptions.ResourceNotFoundException;
 import com.taskease.college.Model.Admission;
 import com.taskease.college.Model.Student;
 import com.taskease.college.PayLoad.AdmissionDTO;
+import com.taskease.college.PayLoad.ApiResponse;
 import com.taskease.college.Repository.AdmissionRepo;
 import com.taskease.college.Repository.StudentRepo;
 import com.taskease.college.Service.AdmissionService;
@@ -29,6 +31,12 @@ public class AdmissionServiceImpl implements AdmissionService {
     @Override
     public AdmissionDTO addAdmission(AdmissionDTO admissionDTO , long studentId) {
         Student student = this.studentRepo.findById(studentId).orElseThrow(()-> new ResourceNotFoundException("Student","id",studentId));
+
+        boolean admissionExists = this.admissionRepo.existsByStudentId(studentId);
+        if (admissionExists) {
+            throw new ErrorException("Admission already exists Please contact the Warden");
+        }
+
         Admission admission = this.modelMapper.map(admissionDTO, Admission.class);
         admission.setStudent(student);
         this.admissionRepo.save(admission);
