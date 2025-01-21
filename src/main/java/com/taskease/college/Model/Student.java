@@ -55,5 +55,7 @@ public class Student {
     @OneToMany(mappedBy = "student",cascade = CascadeType.ALL , fetch = FetchType.LAZY , orphanRemoval = true)
     private Set<Admission> admissions = new HashSet<>();
 
+    @OneToMany(mappedBy = "student",cascade = CascadeType.ALL , fetch = FetchType.LAZY , orphanRemoval = true)
+    private Set<Bonafide> bonafides = new HashSet<>();
 
 }
