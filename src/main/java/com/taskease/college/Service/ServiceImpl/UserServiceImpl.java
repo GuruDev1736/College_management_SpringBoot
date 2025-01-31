@@ -2,22 +2,28 @@ package com.taskease.college.Service.ServiceImpl;
 
 
 import com.taskease.college.Constants.Constants;
+import com.taskease.college.Constants.EmailService;
+import com.taskease.college.Constants.OTPService;
 import com.taskease.college.Exceptions.ResourceNotFoundException;
 import com.taskease.college.Model.Department;
 import com.taskease.college.Model.Role;
+import com.taskease.college.Model.Student;
 import com.taskease.college.Model.User;
 import com.taskease.college.PayLoad.RoleDTO;
 import com.taskease.college.PayLoad.UserDTO;
 import com.taskease.college.Repository.DepartmentRepo;
 import com.taskease.college.Repository.RoleRepo;
+import com.taskease.college.Repository.StudentRepo;
 import com.taskease.college.Repository.UserRepo;
 import com.taskease.college.Service.UserService;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,12 +39,21 @@ public class UserServiceImpl implements UserService {
 
     private final RoleRepo roleRepo;
 
-    public UserServiceImpl(ModelMapper modelMapper, UserRepo userRepo, PasswordEncoder passwordEncoder, DepartmentRepo departmentRepo, RoleRepo roleRepo) {
+    private final OTPService otpService;
+
+    private final EmailService emailService;
+
+    private final StudentRepo studentRepo;
+
+    public UserServiceImpl(ModelMapper modelMapper, UserRepo userRepo, PasswordEncoder passwordEncoder, DepartmentRepo departmentRepo, RoleRepo roleRepo, OTPService otpService, EmailService emailService, StudentRepo studentRepo) {
         this.modelMapper = modelMapper;
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
         this.departmentRepo = departmentRepo;
         this.roleRepo = roleRepo;
+        this.otpService = otpService;
+        this.emailService = emailService;
+        this.studentRepo = studentRepo;
     }
 
     @Override
@@ -170,4 +185,54 @@ public class UserServiceImpl implements UserService {
         return roleDTOS;
     }
 
+    @Override
+    public void sendOTP(String email) {
+
+        boolean isUserFound = false;
+
+        Optional<User> optionalUser = this.userRepo.findByEmail(email);
+        if (optionalUser.isPresent()) {
+            isUserFound = true;
+        }
+
+        if (!isUserFound) {
+            Optional<Student> optionalRentant = this.studentRepo.findByEmail(email);
+            if (!optionalRentant.isPresent()) {
+                throw new ResourceNotFoundException("Faculty or Student", "email : " + email, 0);
+            }
+        }
+        String otp = otpService.generateOtp(email);
+        emailService.sendOtp(email, otp);
+    }
+
+    @Override
+    public Boolean validateOTP(String email, String otp) {
+        boolean isValid = otpService.validateOtp(email, otp);
+        if (isValid) {
+            otpService.clearOtp(email);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public void changePassword(String email , String password) {
+        boolean isUserUpdated = false;
+
+        Optional<User> optionalUser = this.userRepo.findByEmail(email);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            user.setPassword(passwordEncoder.encode(password));
+            this.userRepo.save(user);
+            isUserUpdated = true;
+        }
+
+        if (!isUserUpdated) {
+            Student rentant = this.studentRepo.findByEmail(email)
+                    .orElseThrow(() -> new ResourceNotFoundException("Student", "email", 0));
+            rentant.setPassword(passwordEncoder.encode(password));
+            this.studentRepo.save(rentant);
+        }
+    }
 }

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class BonafideServiceImpl implements BonafideService {
@@ -39,21 +40,27 @@ public class BonafideServiceImpl implements BonafideService {
 
     @Override
     public BonafideDTO getById(long bonafideId) {
-        return null;
+        Bonafide bonafide = bonafideRepo.findById(bonafideId).orElseThrow(() -> new ResourceNotFoundException("Bonafide","Id",bonafideId));
+        return modelMapper.map(bonafide,BonafideDTO.class);
     }
 
     @Override
     public List<BonafideDTO> getAllBonafide() {
-        return List.of();
+        List<BonafideDTO> bonafideList = bonafideRepo.findAll().stream().map(x -> modelMapper.map(x,BonafideDTO.class)).toList();
+        return bonafideList;
     }
 
     @Override
     public List<BonafideDTO> getBonafideByStudent(long studentId) {
-        return List.of();
+
+        Student student = studentRepo.findById(studentId).orElseThrow(() -> new ResourceNotFoundException("Student","Id",studentId));
+        List<BonafideDTO> list = bonafideRepo.findByStudent(student).stream().map(x -> modelMapper.map(x,BonafideDTO.class)).toList();
+        return list;
     }
 
     @Override
     public void deleteBonafide(long bonafideId) {
-
+        Bonafide bonafide = bonafideRepo.findById(bonafideId).orElseThrow(() -> new ResourceNotFoundException("Bonafide","Id",bonafideId));
+        bonafideRepo.deletebonafideById(bonafideId);
     }
 }

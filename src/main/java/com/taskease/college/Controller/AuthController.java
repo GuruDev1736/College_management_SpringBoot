@@ -103,6 +103,7 @@ public class AuthController {
                 .hostelAllowance(studentDTO.getHostelAdmission() != null ? studentDTO.getHostelAdmission() : false)
                 .fullName(studentDTO.getFullName() != null ? studentDTO.getFullName() : "")
                 .userProfilePic(studentDTO.getProfile_pic() != null ? studentDTO.getProfile_pic() : "")
+                .enrollement(studentDTO.getEnrollment() != null ? studentDTO.getEnrollment() : "")
                 .userRole(userDetails.getAuthorities().stream()
                         .map(GrantedAuthority::getAuthority)
                         .findFirst()
@@ -123,6 +124,7 @@ public class AuthController {
                 .batchId(0)
                 .fullName(userDTO.getFullName() != null ? userDTO.getFullName() : "")
                 .userProfilePic(userDTO.getProfile_pic() != null ? userDTO.getProfile_pic() : "")
+                .enrollement("")
                 .userRole(userDetails.getAuthorities().stream()
                         .map(GrantedAuthority::getAuthority)
                         .findFirst()
@@ -178,6 +180,32 @@ public class AuthController {
     public ResponseEntity<ApiResponse<String>> deleteUser(@PathVariable("id") long id) {
         userService.deleteUserById(id);
         return ResponseEntity.ok(new ApiResponse<>("200","user Deleted Successfully",""));
+    }
+
+
+    @PostMapping("/send-otp")
+    public ResponseEntity<ApiResponse<String>> sendOTP(@RequestParam("email") String email){
+        this.userService.sendOTP(email);
+        return ResponseEntity.ok(new ApiResponse<>("200","OTP sent successfully",""));
+    }
+
+    @PostMapping("/validate-otp")
+    public ResponseEntity<ApiResponse<String>> validateOTP(@RequestParam("email") String email , @RequestParam("otp") String otp){
+        Boolean message = this.userService.validateOTP(email,otp);
+        if (message)
+        {
+            return ResponseEntity.ok(new ApiResponse<>("200","Success! OTP is valid.",""));
+        }
+        else
+        {
+            return ResponseEntity.ok(new ApiResponse<>("500","Invalid OTP",""));
+        }
+    }
+
+    @PutMapping("/changePassword")
+    public ResponseEntity<ApiResponse<String>> changePassword(@RequestParam("email") String email , @RequestParam("password") String password){
+        this.userService.changePassword(email,password);
+        return ResponseEntity.ok(new ApiResponse<>("200","Password changed Successfully",""));
     }
 
 

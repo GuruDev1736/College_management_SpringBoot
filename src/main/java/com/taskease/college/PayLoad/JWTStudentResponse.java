@@ -22,4 +22,5 @@ public class JWTStudentResponse {
     private String fullName;
     private String userRole;
     private String userProfilePic;
+    private String enrollement;
 }

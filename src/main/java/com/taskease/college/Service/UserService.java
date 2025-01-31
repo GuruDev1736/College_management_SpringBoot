@@ -20,4 +20,7 @@ public interface UserService {
     void deleteUserById(long id);
     List<UserDTO> getUsersByRole(String role);
     List<RoleDTO> getAllRoles();
+    void sendOTP(String email);
+    Boolean validateOTP(String email , String otp);
+    void changePassword(String email , String password);
 }
