@@ -50,9 +50,9 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/login").permitAll()
-                        .requestMatchers("/auth/send-otp/*").permitAll()
-                        .requestMatchers("/auth/validate-otp/*").permitAll()
-                        .requestMatchers("/auth/changePassword/*").permitAll()
+                        .requestMatchers("/auth/send-otp").permitAll()
+                        .requestMatchers("/auth/validate-otp").permitAll()
+                        .requestMatchers("/auth/changePassword").permitAll()
                         .requestMatchers("/auth/register").permitAll()
                         .requestMatchers("/auth/super/register").permitAll()
                         .requestMatchers("/department/").permitAll()
